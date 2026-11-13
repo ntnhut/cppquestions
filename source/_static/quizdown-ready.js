@@ -1,5 +1,5 @@
 // Quizdown consumes source text on load. Reveal only the rendered UI so its
-// answer comments cannot flash on screen while the JavaScript is loading.
+// explanations cannot flash on screen while the JavaScript is loading.
 window.addEventListener("load", () => {
     setTimeout(() => {
         document.querySelectorAll(".quizdown").forEach((quiz) => {

@@ -8,7 +8,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "source/_ext"))
-from explained_quiz import answer_comments
+from explained_quiz import shared_explanation
 seen = set()
 errors = []
 questions = sorted((ROOT / "source/questions").glob("*.md"))
@@ -47,7 +47,7 @@ for path in questions:
         errors.append(f"{path.name}: expected one quiz block")
     else:
         try:
-            answer_comments(blocks[0])
+            shared_explanation(blocks[0])
         except ValueError as error:
             errors.append(f"{path.name}: {error}")
         for section in ("Answer and explanation", "Interview follow-up"):

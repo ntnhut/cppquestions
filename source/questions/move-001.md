@@ -17,7 +17,7 @@ What does this program print?
 :language: cpp
 ```
 
-Select an answer, then choose **Evaluate** to read the explanation.
+Select an answer to see feedback and read the explanation below the choices.
 
 ```{quizdown-explained}
 ## Which constructor initializes b?

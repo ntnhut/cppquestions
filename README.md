@@ -35,9 +35,9 @@ as build failures.
 4. Add one fenced `{quizdown-explained}` block. Use ordered task lists and mark
    exactly one option with `[x]`. Inside the same block, add an
    `## Answer and explanation` section followed by the interview follow-up.
-   The Sphinx helper converts this shared text into Quizdown's native answer
-   comments. It stays hidden while answering and appears after **Evaluate**,
-   whether the selected answer was correct or incorrect. Reset hides it again.
+   The Sphinx helper converts this text into one fenced `explanation` block.
+   It stays hidden until an answer is selected, then appears below the choices,
+   whether the answer was correct or incorrect. Reset hides it again.
 5. Keep the next learning step and references outside the quiz. Check the
    language rules and code before setting `status: verified`.
 6. Add the page to the relevant topic's `toctree`, then run the checks and build.
@@ -51,7 +51,8 @@ not depend on a CDN. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for it
 source, hash, and license. Source downloads remain available; the answers are
 intentionally public.
 
-The bundled `quizdown.js` supports these result-only comments without changes.
+The bundled `quizdown.js` comes from our fork with inline explanation support.
+Keep `immediateFeedback: True` in `source/conf.py` to reveal explanations on selection.
 JavaScript is required for the interactive explanation reveal; downloaded page
 source still contains the answer and explanation.
 
@@ -74,7 +75,7 @@ when connecting it.
 
 - Add deterministic typed-answer questions after validating an accessible input flow.
 - Complete a keyboard-navigation accessibility review. Initial Chrome checks cover
-  answer feedback, scoring, reset, mobile width, and explanation reveal after evaluation.
+  answer feedback, scoring, reset, mobile width, and inline explanation reveal on selection.
 - Expand the initial questions and learning paths using learner feedback.
 - Create the C++ Questions LinkedIn page and add its real URL to the About page.
 - Publish topic-based text courses on Leanpub first, then video courses on Udemy.

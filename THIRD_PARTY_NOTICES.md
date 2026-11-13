@@ -2,14 +2,15 @@
 
 ## Quizdown JavaScript renderer
 
-`source/_static/quizdown.js` is the existing renderer from the local newindenmark
-project, identical to the bundle in the local quizdown-js checkout. It includes
-the quiz behavior used by that project. Do not silently replace it with a CDN
-`latest` build.
+`source/_static/quizdown.js` is built from our quizdown-js fork. It includes
+immediate correct/incorrect answer feedback and inline shared explanations.
+Do not silently replace it with a CDN `latest` build.
 
 - Upstream: <https://github.com/bonartm/quizdown-js>
+- Fork: <https://github.com/ntnhut/quizdown-js>
+- Source commit: `1847a96b7cd0f503b5fdff236f19c9b41e7fee7a`
 - Local checkout package version: 0.6.0
-- SHA-256: `523ca300ba7b2d70c52e8dbe0e7b7a81243f121cc9a3f3984c8e02b53cdeb9a4`
+- SHA-256: `2811d4667beb82328ba0f0d0d5b2fe4aa974d8c03a70daa0cefba7b0bf2be77a`
 - License: MIT (upstream notice below)
 
 The MIT License
