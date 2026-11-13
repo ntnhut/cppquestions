@@ -1,0 +1,28 @@
+/* Keep the reading layout from Furo and give quizzes a stable light surface. */
+.quizdown:not(.quizdown-ready) {
+    visibility: hidden;
+}
+
+.quizdown {
+    background: #fff;
+    color: #172b24;
+    border: 1px solid #c5d5ce;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-block: 1.5rem;
+    overflow-wrap: anywhere;
+    color-scheme: light;
+}
+
+.quizdown pre {
+    overflow-x: auto;
+}
+
+.question-meta {
+    color: var(--color-foreground-secondary);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 40rem) {
+    .quizdown { padding: 0.5rem; }
+}

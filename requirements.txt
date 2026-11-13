@@ -1,0 +1,5 @@
+# Match the working newindenmark stack; pin the extension to its tested commit.
+Sphinx==7.4.7
+myst-parser==4.0.1
+furo==2024.4.27
+sphinxcontrib-quizdown @ git+https://github.com/bonartm/sphinxcontrib-quizdown@d9f24a7a2305ad5b196e06597b1779c9414d1d85
