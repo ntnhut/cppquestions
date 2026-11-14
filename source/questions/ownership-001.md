@@ -5,11 +5,14 @@ difficulty: basic
 cpp_standard: c++17
 kind: single-choice
 status: verified
+tags: [raii, lifetime, unique-ptr]
+related: [ownership-002, move-001]
 ---
 
 # Does a unique pointer release its resource at scope exit?
 
-**Basic · C++17 · Ownership and RAII · Single choice**
+```{question-meta}
+```
 
 Assume allocation succeeds and execution reaches the end of the inner scope.
 What does this program print?
@@ -48,6 +51,9 @@ and release its resource.
 ```
 
 ## Go deeper
+
+```{related-questions}
+```
 
 Continue with the [ownership and RAII learning path](../topics/ownership.md).
 

@@ -1,4 +1,4 @@
 {
-  "ownership-001.cpp": "destroy\nend\n",
-  "move-001.cpp": "copy\n"
+  "ownership-001.cpp": {"cpp_standard": "c++17", "stdout": "destroy\nend\n"},
+  "move-001.cpp": {"cpp_standard": "c++17", "stdout": "copy\n"}
 }

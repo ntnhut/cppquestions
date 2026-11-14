@@ -1,65 +1,89 @@
-"""Check the prototype question schema and single-choice answer markers."""
+"""Validate the published question collection without compiling its examples."""
 
 from pathlib import Path
 import re
 import sys
 
-import yaml
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "source/_ext"))
+from question_model import KINDS, QUIZ_BLOCK, frontmatter, split_quiz, validate_metadata
+from example_manifest import load_manifest
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "source/_ext"))
-from explained_quiz import shared_explanation
-seen = set()
-errors = []
-questions = sorted((ROOT / "source/questions").glob("*.md"))
-if not questions:
-    raise SystemExit("No question pages found")
 
-for path in questions:
-    text = path.read_text()
-    frontmatter = re.match(r"\A---\n(.*?)\n---\n", text, re.DOTALL)
-    if not frontmatter:
-        errors.append(f"{path.name}: missing YAML frontmatter")
-        continue
-    data = yaml.safe_load(frontmatter.group(1))
-    if not isinstance(data, dict):
-        errors.append(f"{path.name}: frontmatter must be a mapping")
-        continue
-    for field in ("id", "topic", "difficulty", "cpp_standard", "kind", "status"):
-        if not isinstance(data.get(field), str) or not data[field].strip():
-            errors.append(f"{path.name}: missing or invalid {field}")
-    question_id = data.get("id")
-    if not isinstance(question_id, str):
-        continue
-    if question_id != path.stem or question_id in seen:
-        errors.append(f"{path.name}: ID must be unique and match the filename")
-    seen.add(question_id)
-    if data.get("difficulty") not in {"basic", "intermediate", "advanced"}:
-        errors.append(f"{path.name}: unknown difficulty")
-    if data.get("cpp_standard") not in {"c++11", "c++14", "c++17", "c++20", "c++23"}:
-        errors.append(f"{path.name}: unknown C++ standard")
-    if data.get("status") != "verified":
-        errors.append(f"{path.name}: review question before including it in the site")
-    if data.get("kind") != "single-choice":
-        errors.append(f"{path.name}: only single-choice is supported in this prototype")
-    blocks = re.findall(r"```\{quizdown-explained\}\n(.*?)\n```", text, re.DOTALL)
-    if len(blocks) != 1:
-        errors.append(f"{path.name}: expected one quiz block")
-    else:
+def check_content(root):
+    errors = []
+    questions = sorted((root / "source/questions").glob("*.md"))
+    if not questions:
+        return ["No question pages found"], 0
+    topics = {path.stem for path in (root / "source/topics").glob("*.md")}
+    question_ids = {path.stem for path in questions}
+    try:
+        examples = load_manifest(root / "examples")
+    except (ValueError, OSError) as error:
+        return [str(error)], len(questions)
+    included_examples = set()
+    seen = set()
+
+    for path in questions:
+        text = path.read_text(encoding="utf-8")
+        issues = []
         try:
-            shared_explanation(blocks[0])
+            data = frontmatter(text)
         except ValueError as error:
             errors.append(f"{path.name}: {error}")
-        for section in ("Answer and explanation", "Interview follow-up"):
-            if f"## {section}\n" not in blocks[0]:
-                errors.append(f"{path.name}: missing hidden {section} section")
-    outside_quiz = re.sub(r"```\{quizdown-explained\}\n.*?\n```", "", text, flags=re.DOTALL)
-    if "## Answer and explanation" in outside_quiz or "## Interview follow-up" in outside_quiz:
-        errors.append(f"{path.name}: answer and follow-up must be inside the quiz")
-    for section in ("Go deeper", "References"):
-        if f"## {section}\n" not in text:
-            errors.append(f"{path.name}: missing {section} section")
+            continue
+        issues.extend(validate_metadata(data, filename=path.stem, topics=topics, question_ids=question_ids))
+        question_id = data.get("id")
+        if isinstance(question_id, str):
+            if question_id in seen:
+                issues.append("ID must be unique")
+            seen.add(question_id)
+        blocks = list(QUIZ_BLOCK.finditer(text))
+        if len(blocks) != 1:
+            issues.append("expected one supported quiz block")
+        else:
+            block = blocks[0]
+            kind = data.get("kind")
+            if block["directive"] != KINDS.get(kind if isinstance(kind, str) else None):
+                issues.append("quiz directive must match the question kind")
+            try:
+                split_quiz(block["content"], data.get("kind"))
+            except ValueError as error:
+                issues.append(str(error))
+        outside = QUIZ_BLOCK.sub("", text)
+        if "## Answer and explanation" in outside or "## Interview follow-up" in outside:
+            issues.append("answer and follow-up must be inside the quiz")
+        for section in ("Go deeper", "References"):
+            match = re.search(rf"^## {section}\n(.*?)(?=^## |\Z)", outside, re.MULTILINE | re.DOTALL)
+            if not match or not match[1].strip():
+                issues.append(f"missing or empty {section} section")
+            elif section == "References" and not re.search(r"https?://\S+", match[1]):
+                issues.append("References must include a source URL")
+        for directive in ("question-meta", "related-questions"):
+            if len(re.findall(rf"^```\{{{directive}\}}\n```$", outside, re.MULTILINE)) != 1:
+                issues.append(f"expected one {{{directive}}} directive")
+        for target in re.findall(r"^`{3,}\{literalinclude\}\s+([^\n]+)", text, re.MULTILINE):
+            example = (path.parent / target.strip()).resolve()
+            if example.parent != (root / "examples").resolve() or example.suffix != ".cpp":
+                issues.append(f"example must be a .cpp file in examples/: {target}")
+                continue
+            included_examples.add(example.name)
+            if example.name not in examples:
+                issues.append(f"example missing from expected.json: {example.name}")
+            elif examples[example.name]["cpp_standard"] != data.get("cpp_standard"):
+                issues.append(f"example C++ standard differs from question: {example.name}")
+        errors.extend(f"{path.name}: {issue}" for issue in issues)
 
-if errors:
-    raise SystemExit("\n".join(errors))
-print(f"PASS {len(questions)} question pages: metadata, answer markers, explanation sections")
+    for filename in sorted(examples.keys() - included_examples):
+        errors.append(f"{filename}: example is not included by any question")
+    return errors, len(questions)
+
+
+def main():
+    errors, count = check_content(Path(__file__).resolve().parents[1])
+    if errors:
+        raise SystemExit("\n".join(errors))
+    print(f"PASS {count} question pages: metadata, answers, relationships, references, examples")
+
+
+if __name__ == "__main__":
+    main()

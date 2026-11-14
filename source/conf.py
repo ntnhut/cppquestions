@@ -10,7 +10,7 @@ project = "C++ Questions"
 author = "Nhut Nguyen"
 copyright = "2026, Nhut Nguyen"
 
-extensions = ["myst_parser", "sphinxcontrib.quizdown", "explained_quiz"]
+extensions = ["myst_parser", "sphinxcontrib.quizdown", "question_pages"]
 source_suffix = {".md": "markdown", ".rst": "restructuredtext"}
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 myst_enable_extensions = ["colon_fence"]

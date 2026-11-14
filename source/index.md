@@ -11,7 +11,8 @@ prerequisites to practical exercises.
 - [Ownership and RAII](topics/ownership.md): resource lifetimes and smart pointers.
 - [Move semantics](topics/move-semantics.md): references, value categories, and moving resources.
 
-This is the first prototype, with two example questions. Each question includes
+This is the first prototype, with three questions using single-choice and typed
+answers. Each question includes
 its C++ version, difficulty, explanation, and a follow-up to think through.
 
 ## Learn more deeply

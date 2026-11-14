@@ -1,5 +1,4 @@
-resources/overview.md
-resources/plans.md
+resources/*
 .venv/
 _build/
 __pycache__/

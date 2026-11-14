@@ -1,6 +1,6 @@
 /* Keep the reading layout from Furo and give quizzes a stable light surface. */
 .quizdown:not(.quizdown-ready) {
-    visibility: hidden;
+    display: none;
 }
 
 .quizdown {
@@ -21,6 +21,58 @@
 .question-meta {
     color: var(--color-foreground-secondary);
     font-size: 0.9rem;
+}
+
+.question-tags, .answer-help {
+    color: var(--color-foreground-secondary);
+    font-size: 0.9rem;
+}
+
+.quiz-fallback[hidden], .typed-answer-form[hidden],
+.typed-explanation[hidden], .typed-fallback-note[hidden] {
+    display: none;
+}
+
+.typed-question {
+    border: 1px solid var(--color-foreground-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-block: 1.5rem;
+}
+
+.typed-answer-form label {
+    display: block;
+    font-weight: bold;
+}
+
+.typed-answer-form input {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+    font: inherit;
+    color: var(--color-foreground-primary);
+    background: var(--color-background-primary);
+    border: 1px solid var(--color-foreground-secondary);
+    border-radius: 0.25rem;
+}
+
+.answer-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-block: 1rem;
+}
+
+.answer-actions button {
+    padding: 0.6rem 1rem;
+    font: inherit;
+    cursor: pointer;
+}
+
+.typed-answer-form :focus-visible {
+    outline: 3px solid var(--color-brand-primary);
+    outline-offset: 3px;
 }
 
 @media (max-width: 40rem) {

@@ -9,6 +9,7 @@ ownership before choosing between raw pointers and smart pointers.
 :maxdepth: 1
 
 ../questions/ownership-001
+../questions/ownership-002
 ```
 
 ## Your learning path

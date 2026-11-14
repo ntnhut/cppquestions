@@ -1,0 +1,131 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>C++ Questions browser regression checks</title>
+<pre id="report">Checks did not finish</pre>
+<script>
+const pages = /* PAGE_URLS */ {};
+const report = document.querySelector("#report");
+let checks = 0;
+const pause = () => new Promise(resolve => setTimeout(resolve, 100));
+function check(condition, message) {
+    if (!condition) throw new Error(message);
+    checks++;
+}
+async function page(name, scripts = true) {
+    const frame = document.createElement("iframe");
+    frame.width = "390";
+    frame.height = "844";
+    if (!scripts) frame.setAttribute("sandbox", "allow-same-origin");
+    await new Promise((resolve, reject) => {
+        frame.onload = resolve;
+        frame.onerror = reject;
+        frame.src = pages[name];
+        document.body.append(frame);
+    });
+    await pause();
+    return [frame, frame.contentDocument];
+}
+function visible(element) {
+    return element && element.getClientRects().length > 0;
+}
+async function run() {
+    for (const [id, correctText] of [
+        ["ownership-001", "destroy followed by end"],
+        ["move-001", "The copy constructor"],
+    ]) {
+        const [frame, doc] = await page(id);
+        const host = doc.querySelector(".quizdown");
+        for (let attempt = 0; attempt < 30 && !host.classList.contains("quizdown-ready"); attempt++) {
+            await pause();
+        }
+        const root = host.shadowRoot;
+        check(host.classList.contains("quizdown-ready"), `${id}: interactive quiz loads (shadow: ${!!root}, inputs: ${root?.querySelectorAll('input').length}, content: ${!!root?.querySelector('.quizdown-content')})`);
+        check(!visible(doc.querySelector(".quiz-fallback")), `${id}: static fallback hidden after successful load`);
+        check(!root.querySelector(".question-explanation"), `${id}: explanation initially hidden`);
+        const inputs = [...root.querySelectorAll('input[type="radio"]')];
+        const correct = inputs.find(input => input.closest("label").textContent.replace(/\s+/g, " ").includes(correctText));
+        check(inputs.length === 4 && correct, `${id}: four labeled options and expected answer`);
+        for (const input of [inputs.find(input => input !== correct), correct]) {
+            input.click();
+            await pause();
+            const explanation = root.querySelector(".question-explanation");
+            check(visible(explanation), `${id}: explanation revealed for either result`);
+            check(root.querySelectorAll(".question-explanation").length === 1, `${id}: one shared explanation`);
+            check(explanation.textContent.includes("Interview follow-up"), `${id}: full follow-up preserved`);
+        }
+        root.querySelector('button[title="Evaluate"]').click();
+        await pause();
+        check(root.textContent.includes("Your quiz results"), `${id}: evaluation still works`);
+        root.querySelector('button[title="One more time!"]').click();
+        await pause();
+        check(!root.querySelector(".question-explanation"), `${id}: reset hides explanation`);
+        check(!root.querySelector("input:checked"), `${id}: reset clears answer`);
+        check(doc.documentElement.scrollWidth <= doc.documentElement.clientWidth + 1, `${id}: no mobile page overflow`);
+        frame.remove();
+    }
+
+    const [frame, doc] = await page("ownership-002");
+    const form = doc.querySelector(".typed-answer-form");
+    const input = form.querySelector("input");
+    const explanation = doc.querySelector(".typed-explanation");
+    const feedback = form.querySelector(".answer-feedback");
+    check(visible(form) && !visible(explanation), "typed: input ready, explanation initially hidden");
+    check(input.labels.length === 1 && input.labels[0].textContent.includes("four-letter acronym"), "typed: descriptive associated label");
+    check(feedback.getAttribute("role") === "status", "typed: feedback has a live status role");
+    check(input.getAttribute("aria-describedby").split(" ").every(id => doc.getElementById(id)), "typed: descriptions resolve");
+    input.focus();
+    check(doc.activeElement === input, "typed: input accepts focus");
+    input.value = "   ";
+    form.requestSubmit();
+    check(feedback.textContent.startsWith("Enter an answer") && !visible(explanation), "typed: whitespace-only answer is rejected without reveal");
+    input.value = "garbage collection";
+    form.requestSubmit();
+    check(feedback.textContent.startsWith("Not quite") && visible(explanation), "typed: wrong answer reveals explanation");
+    check(input.getAttribute("aria-invalid") === "true", "typed: wrong answer identified accessibly");
+    input.value = " \trAiI ";
+    form.requestSubmit();
+    check(feedback.textContent.startsWith("Correct"), "typed: retry accepts case and surrounding whitespace");
+    check(input.getAttribute("aria-invalid") === "false", "typed: correct retry clears invalid state");
+    check(explanation.textContent.includes("Resource Acquisition Is Initialization"), "typed: complete explanation preserved");
+    form.reset();
+    check(input.value === "" && !visible(explanation), "typed: reset clears input and hides explanation");
+    check(feedback.textContent === "" && !input.hasAttribute("aria-invalid"), "typed: reset clears feedback and invalid state");
+    check(doc.activeElement === input, "typed: reset returns focus to input");
+
+    // Reinitialize a clone to exercise the other documented normalization mode.
+    const clone = doc.querySelector(".typed-question").cloneNode(true);
+    const clonedForm = clone.querySelector("form");
+    clonedForm.dataset.normalization = "trim";
+    clonedForm.dataset.answers = '["RAII", "resource acquisition"]';
+    doc.querySelector(".typed-question").replaceWith(clone);
+    const script = doc.createElement("script");
+    script.src = new URL("../_static/typed-answer.js", pages["ownership-002"]).href;
+    await new Promise(resolve => { script.onload = resolve; doc.body.append(script); });
+    const clonedInput = clonedForm.querySelector("input");
+    for (const [answer, correct] of [["raii", false], [" RAII ", true], ["resource acquisition", true], ["resource  acquisition", false], ["RAII.", false]]) {
+        clonedInput.value = answer;
+        clonedForm.requestSubmit();
+        check(clonedForm.querySelector(".answer-feedback").textContent.startsWith(correct ? "Correct" : "Not quite"), `typed trim mode: ${JSON.stringify(answer)}`);
+    }
+    doc.body.dataset.theme = "dark";
+    check(frame.contentWindow.getComputedStyle(clonedInput).color !== frame.contentWindow.getComputedStyle(clonedInput).backgroundColor, "typed: dark theme input has distinct text and background");
+    check(doc.documentElement.scrollWidth <= doc.documentElement.clientWidth + 1, "typed: no mobile page overflow");
+    frame.remove();
+
+    for (const name of ["ownership-001", "ownership-002", "failed-choice", "failed-typed"]) {
+        const [frame, doc] = await page(name, name.startsWith("failed-"));
+        const fallback = doc.querySelector(".quiz-fallback, .typed-explanation");
+        check(visible(fallback), `${name}: static explanation readable without working quiz scripts`);
+        check(fallback.textContent.includes("Answer and explanation") && fallback.textContent.includes("Interview follow-up"), `${name}: complete answer and follow-up`);
+        check(!visible(doc.querySelector(".quizdown, .typed-answer-form")), `${name}: nonfunctional controls hidden`);
+        check(!fallback.querySelector("li strong"), `${name}: section labels are outside answer options`);
+        frame.remove();
+    }
+    report.textContent = `PASS ${checks} browser checks: single choice, typed answers, retries/reset, mobile width, no-JavaScript and failed-script fallbacks`;
+    report.dataset.result = "passed";
+}
+run().catch(error => {
+    report.textContent = `FAIL after ${checks} checks: ${error.stack}`;
+    report.dataset.result = "failed";
+});
+</script>

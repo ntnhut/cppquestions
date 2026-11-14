@@ -16,6 +16,7 @@ jobs:
           cache: pip
       - run: python -m pip install -r requirements.txt
       - run: python scripts/check_content.py
+      - run: python -m unittest discover -s tests
       - run: sphinx-build -n -W --keep-going -b html source _build/html
   examples:
     runs-on: ubuntu-24.04

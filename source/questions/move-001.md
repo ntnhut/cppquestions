@@ -5,11 +5,14 @@ difficulty: intermediate
 cpp_standard: c++17
 kind: single-choice
 status: verified
+tags: [const, std-move, overload-resolution]
+related: [ownership-001]
 ---
 
 # Why does std::move on a const object copy?
 
-**Intermediate · C++17 · Move semantics · Single choice**
+```{question-meta}
+```
 
 What does this program print?
 
@@ -48,6 +51,9 @@ can then bind to `Widget&&`, and overload resolution selects the move constructo
 ```
 
 ## Go deeper
+
+```{related-questions}
+```
 
 Continue with the [move semantics learning path](../topics/move-semantics.md).
 Review [ownership and RAII](../topics/ownership.md) before implementing a
