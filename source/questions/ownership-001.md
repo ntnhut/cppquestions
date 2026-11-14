@@ -21,8 +21,6 @@ What does this program print?
 :language: cpp
 ```
 
-Select an answer to see feedback and read the explanation below the choices.
-
 ```{quizdown-explained}
 ## What is the output?
 
@@ -33,7 +31,8 @@ Select an answer to see feedback and read the explanation below the choices.
 ## Answer and explanation
 
 **`destroy` followed by `end`, each on its own line.** The local `owner` is
-destroyed when execution leaves the inner scope. Its `std::unique_ptr` destructor
+destroyed when [execution leaves the inner scope](https://eel.is/c++draft/stmt.dcl).
+Its [`std::unique_ptr` destructor](https://eel.is/c++draft/unique.ptr.single.dtor)
 uses the default deleter to delete the owned `Resource`, which calls the
 `Resource` destructor. Execution then prints `end`.
 
@@ -49,15 +48,3 @@ What would happen if the scope were exited by an exception caught outside it?
 During stack unwinding, the fully constructed local owner would be destroyed
 and release its resource.
 ```
-
-## Go deeper
-
-```{related-questions}
-```
-
-Continue with the [ownership and RAII learning path](../topics/ownership.md).
-
-## References
-
-- [C++ working draft: unique_ptr destructor](https://eel.is/c++draft/unique.ptr.single.dtor)
-- [C++ working draft: exiting a scope](https://eel.is/c++draft/stmt.dcl)

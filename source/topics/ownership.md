@@ -20,4 +20,4 @@ ownership before choosing between raw pointers and smart pointers.
 4. Distinguish ownership from borrowing through references or raw pointers.
 5. Study shared ownership and exception-safe resource handling.
 
-Read the [course plans](../learning-paths.md) for how deeper study will fit together.
+Explore the other [learning paths](../learning-paths.md) to choose what to study next.

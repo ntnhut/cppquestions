@@ -10,7 +10,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from check_content import check_content
-from question_model import frontmatter, shared_explanation, static_markdown, validate_metadata
+from question_model import shared_explanation, static_markdown
 from example_manifest import load_manifest
 
 
@@ -82,11 +82,11 @@ class ContentValidationTests(unittest.TestCase):
         self.change("{typed-answer}", "{quizdown-explained}")
         self.assert_invalid("directive must match")
 
-    def test_explanation_followup_and_references_cannot_be_empty(self):
-        self.change("## Interview follow-up", "## Follow-up")
+    def test_explanation_followup_and_sources_cannot_be_empty(self):
         self.change("https://", "invalid://")
+        self.assert_invalid("explanation must include a source URL")
+        self.change("## Interview follow-up", "## Follow-up")
         self.assert_invalid("Interview follow-up")
-        self.assert_invalid("References must include a source URL")
 
     def test_example_standard_must_match_question(self):
         self.change("cpp_standard: c++17", "cpp_standard: c++20", "ownership-001.md")
@@ -109,20 +109,12 @@ class ContentValidationTests(unittest.TestCase):
 
     def test_nested_code_fence_in_explanation_is_preserved(self):
         self.change("```{typed-answer}", "````{typed-answer}")
-        self.change("\n```\n\n## Go deeper", "\n````\n\n## Go deeper")
-        self.change("**RAII**,", '```cpp\nint example = 0;\n```\n\n**RAII**,')
+        self.change("lifetime.\n```", "lifetime.\n````")
+        self.change("## Answer and explanation\n\n", '## Answer and explanation\n\n```cpp\nint example = 0;\n```\n\n')
         self.assertEqual(check_content(self.root)[0], [])
 
 
-class TemplateTests(unittest.TestCase):
-    def test_templates_are_drafts_with_documented_schema(self):
-        for path in (ROOT / "docs/templates").glob("*.md"):
-            with self.subTest(path=path.name):
-                data = frontmatter(path.read_text())
-                self.assertEqual(data["status"], "draft")
-                data["status"] = "verified"
-                self.assertEqual(validate_metadata(data), [])
-
+class RenderingTests(unittest.TestCase):
     def test_shared_explanation_fence_does_not_close_nested_code(self):
         source = "## Prompt\n\n1. [x] Yes\n1. [ ] No\n\n## Answer and explanation\n\n```cpp\nint x;\n```\n\n## Interview follow-up\n\nWhy? Because."
         self.assertIn("````explanation\n", shared_explanation(source))

@@ -3,8 +3,7 @@
 C++ Questions is a project by **Nhut Nguyen** to help developers practice modern
 C++ and find a clear path to deeper understanding.
 
-Questions and full explanations are free to read without an account. Optional
-books and courses will provide structured study formats.
+Questions and full explanations are free to read without an account.
 
 ## How examples are checked
 

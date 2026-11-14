@@ -1,4 +1,4 @@
-"""Render question metadata, related links, and progressively enhanced quizzes."""
+"""Render question metadata and progressively enhanced quizzes."""
 
 import html
 import json
@@ -7,7 +7,6 @@ import re
 
 from docutils import nodes
 from docutils.statemachine import StringList
-from sphinx import addnodes
 from sphinx.util.docutils import SphinxDirective
 from sphinxcontrib.quizdown import Quizdown
 
@@ -43,22 +42,6 @@ class QuestionMeta(QuestionDirective):
         tags = nodes.paragraph(classes=["question-tags"])
         tags += nodes.Text("Tags: " + ", ".join(data["tags"]))
         return [paragraph, tags]
-
-
-class RelatedQuestions(QuestionDirective):
-    def run(self):
-        paragraph = nodes.paragraph()
-        paragraph += nodes.strong("", "Related questions: ")
-        for index, question_id in enumerate(self.question_data()["related"]):
-            if index:
-                paragraph += nodes.Text(", ")
-            link = addnodes.pending_xref(
-                "", refdomain="std", reftype="doc", reftarget=f"/questions/{question_id}",
-                refexplicit=False, refwarn=True,
-            )
-            link += nodes.inline("", question_id)
-            paragraph += link
-        return [paragraph]
 
 
 class ExplainedQuizdown(Quizdown, QuestionDirective):
@@ -123,6 +106,5 @@ def setup(app):
     app.add_directive("quizdown-explained", ExplainedQuizdown)
     app.add_directive("typed-answer", TypedAnswer)
     app.add_directive("question-meta", QuestionMeta)
-    app.add_directive("related-questions", RelatedQuestions)
     app.add_js_file("typed-answer.js")
-    return {"version": "2.0", "parallel_read_safe": True, "parallel_write_safe": True}
+    return {"version": "2.1", "parallel_read_safe": True, "parallel_write_safe": True}

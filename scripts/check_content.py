@@ -46,21 +46,16 @@ def check_content(root):
             if block["directive"] != KINDS.get(kind if isinstance(kind, str) else None):
                 issues.append("quiz directive must match the question kind")
             try:
-                split_quiz(block["content"], data.get("kind"))
+                _, explanation = split_quiz(block["content"], data.get("kind"))
+                if not re.search(r"https?://\S+", explanation):
+                    issues.append("explanation must include a source URL")
             except ValueError as error:
                 issues.append(str(error))
         outside = QUIZ_BLOCK.sub("", text)
         if "## Answer and explanation" in outside or "## Interview follow-up" in outside:
             issues.append("answer and follow-up must be inside the quiz")
-        for section in ("Go deeper", "References"):
-            match = re.search(rf"^## {section}\n(.*?)(?=^## |\Z)", outside, re.MULTILINE | re.DOTALL)
-            if not match or not match[1].strip():
-                issues.append(f"missing or empty {section} section")
-            elif section == "References" and not re.search(r"https?://\S+", match[1]):
-                issues.append("References must include a source URL")
-        for directive in ("question-meta", "related-questions"):
-            if len(re.findall(rf"^```\{{{directive}\}}\n```$", outside, re.MULTILINE)) != 1:
-                issues.append(f"expected one {{{directive}}} directive")
+        if len(re.findall(r"^```\{question-meta\}\n```$", outside, re.MULTILINE)) != 1:
+            issues.append("expected one {question-meta} directive")
         for target in re.findall(r"^`{3,}\{literalinclude\}\s+([^\n]+)", text, re.MULTILINE):
             example = (path.parent / target.strip()).resolve()
             if example.parent != (root / "examples").resolve() or example.suffix != ".cpp":
