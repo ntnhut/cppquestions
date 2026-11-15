@@ -14,7 +14,7 @@ related: [ownership-001]
 ```{question-meta}
 ```
 
-What does this program print?
+In C++17, what does this program print?
 
 ```{literalinclude} ../../examples/move-001.cpp
 :language: cpp
@@ -30,10 +30,10 @@ What does this program print?
 ## Answer and explanation
 
 **The copy constructor is called, and the program prints `copy`.**
-For this expression, [`std::move(a)`](https://eel.is/c++draft/forward) produces an xvalue of type `const Widget`;
+For this expression, [`std::move(a)`](https://timsong-cpp.github.io/cppwp/n4659/forward#5) produces an xvalue of type `const Widget`;
 the returned reference type is `const Widget&&`.
 
-The move constructor takes `Widget&&`. [It cannot bind to this const object](https://eel.is/c++draft/dcl.init.ref),
+The move constructor takes `Widget&&`. [It cannot bind to this const object](https://timsong-cpp.github.io/cppwp/n4659/dcl.init.ref#4),
 because that would discard `const`. The copy constructor takes `const Widget&`,
 which can bind to the expression, so it is selected.
 
@@ -45,5 +45,8 @@ There is a viable copy constructor, so the program compiles.
 ## Interview follow-up
 
 What changes if `a` is declared as `Widget a;`? The expression `std::move(a)`
-can then bind to `Widget&&`, and overload resolution selects the move constructor.
+can then bind to both `Widget&&` and `const Widget&`.
+[Overload resolution prefers the rvalue-reference binding](https://timsong-cpp.github.io/cppwp/n4659/over.ics.rank#3.2.3),
+so this program prints `move`. Using `a` without `std::move` would still copy:
+the expression naming `a` is an lvalue even when the object is non-const.
 ```

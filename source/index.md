@@ -10,8 +10,10 @@ prerequisites to practical exercises.
 
 - [Ownership and RAII](topics/ownership.md): resource lifetimes and smart pointers.
 - [Move semantics](topics/move-semantics.md): references, value categories, and moving resources.
+- [Classes and polymorphism](topics/polymorphism.md): virtual destruction and object slicing.
+- [Containers and iterators](topics/containers.md): safe erasure and deliberate map lookup.
 
-This is the first prototype, with three questions using single-choice and typed
+This is the first prototype, with seven questions using single-choice and typed
 answers. Each question includes
 its C++ version, difficulty, explanation, and a follow-up to think through.
 
@@ -21,6 +23,8 @@ its C++ version, difficulty, explanation, and a follow-up to think through.
 
 topics/ownership
 topics/move-semantics
+topics/polymorphism
+topics/containers
 learning-paths
 about
 ```
