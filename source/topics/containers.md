@@ -1,15 +1,17 @@
 # Containers and iterators
 
-Start with reading and updating stored values. The map question explains why a
-lookup can add a new entry. The vector-erasure question combines iteration and
-modification and is intermediate practice.
+Start with reading a vector's values using a range-based loop. Then try map
+lookup, where reading with a subscript can add an entry. Vector erasure combines
+iteration and modification and is intermediate practice.
 
-**Starting knowledge:** Variables, loops, and an introduction to key-value pairs.
-Learn ordinary vector traversal and iterators before the erasure question.
+**Starting knowledge:** Variables, loops, and addition. The map question also
+introduces key-value pairs. Learn ordinary vector traversal and iterators before
+the erasure question.
 
 ```{toctree}
 :maxdepth: 1
 
+../questions/containers-003
 ../questions/containers-002
 ../questions/containers-001
 ```
