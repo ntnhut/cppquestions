@@ -17,6 +17,9 @@ answer_normalization: trim-case-insensitive
 ```{question-meta}
 ```
 
+**Starting knowledge:** An object can acquire a resource when constructed and
+release it in its destructor. This question checks the name for that pattern.
+
 In C++17, an object owns an open file handle. Successful construction establishes
 ownership, and the destructor closes the handle when the object is destroyed.
 Assume normal scope exit or exception unwinding, rather than abrupt program
@@ -45,8 +48,8 @@ would not make that object its RAII owner.
 
 ## Interview follow-up
 
-How does `std::unique_ptr` apply this idea? When it holds a non-null pointer,
-[its destructor invokes its deleter](https://timsong-cpp.github.io/cppwp/n4659/unique.ptr.single.dtor#2).
-With the default deleter, that deletes the owned object. An empty `unique_ptr`
-has no resource to release. This ties cleanup to the owning object's lifetime.
+Why is this useful in a function with several early returns? A local file-owning
+object is destroyed when execution leaves its scope, including through a
+`return`. Each path gets the same cleanup without remembering a separate close
+call. Cleanup follows the owning object's lifetime.
 ```

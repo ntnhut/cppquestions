@@ -1,23 +1,26 @@
-# Classes and polymorphism
+# Inheritance and polymorphism
 
-Practice how inheritance affects object identity, virtual calls, and safe
-destruction. Use these rules to reason about interfaces that accept base types.
+Optional intermediate practice for code that uses base-class interfaces.
+Start with ordinary classes, constructors, member functions, and composition
+before studying inheritance. The questions here assume you have already learned
+how virtual functions select an implementation through a base reference.
 
-**Starting knowledge:** Classes, constructors, destructors, references, and public inheritance.
+**Starting knowledge:** Classes, value/reference parameters, public inheritance,
+and virtual functions. The destruction example also requires `std::unique_ptr`.
 
 ```{toctree}
 :maxdepth: 1
 
-../questions/polymorphism-001
 ../questions/polymorphism-002
+../questions/polymorphism-001
 ```
 
 ## Your learning path
 
-1. Distinguish a complete derived object from its base subobject.
-2. Understand virtual dispatch through base references and pointers.
-3. Use a virtual destructor when supporting deletion through a base pointer.
-4. Recognize slicing when copying or passing a derived object as a base value.
-5. Choose interfaces that express borrowing, ownership, and copying clearly.
+1. Use simple classes and objects without inheritance.
+2. Learn composition: an object can contain other objects as members.
+3. Learn base and derived classes when an interface needs different implementations.
+4. Review virtual calls through references before trying the slicing question.
+5. Study virtual destruction when owning objects through a base pointer.
 
 Review [ownership and RAII](ownership.md) for resource lifetimes and owning pointers.

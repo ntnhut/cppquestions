@@ -1,7 +1,7 @@
 ---
 id: move-001
 topic: move-semantics
-difficulty: intermediate
+difficulty: advanced
 cpp_standard: c++17
 kind: single-choice
 status: verified
@@ -13,6 +13,9 @@ related: [ownership-001]
 
 ```{question-meta}
 ```
+
+This advanced question combines copy and move constructors, `const`, and
+overload selection. Review references and ordinary object copying first.
 
 In C++17, what does this program print?
 

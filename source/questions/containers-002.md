@@ -14,6 +14,11 @@ related: [containers-001]
 ```{question-meta}
 ```
 
+**Starting knowledge:** A map stores key-value pairs. Here the keys are strings
+and the values are integers. `size()` reports the number of pairs, and `find`
+returns `end()` if a key is absent. Focus on whether reading with `[]` changes
+the map.
+
 In C++17, compare `find` and `operator[]` on this `std::map`. Assume all
 allocations succeed. Boolean output uses the default numeric formatting.
 
@@ -36,13 +41,11 @@ allocations succeed. Boolean output uses the default numeric formatting.
 `end()` when the key is absent; it does not insert an element. The first line
 therefore reports a true comparison (`1`) and the original size (`1`).
 
-In C++17, [`map::operator[]`](https://timsong-cpp.github.io/cppwp/n4659/map.access#2)
-is specified in terms of `try_emplace`. When the key is missing,
-[it inserts it](https://timsong-cpp.github.io/cppwp/n4659/map.modifiers#4)
-and constructs the mapped value with no supplied arguments. For this map with
-its default allocator, the `int` is
-[value-initialized to zero](https://timsong-cpp.github.io/cppwp/n4659/dcl.init#8),
-not left indeterminate. The map now has two elements.
+[`map::operator[]`](https://timsong-cpp.github.io/cppwp/n4659/map.access#2)
+adds a key-value pair when the key is missing. In this map, the new integer
+value [starts at zero](https://timsong-cpp.github.io/cppwp/n4659/dcl.init#8),
+not an indeterminate value. The map now has two elements: the original `ready`
+entry and the new `missing` entry.
 
 The subscript is useful for deliberately creating a counter, as in
 `++counts[key]`. It is unsuitable for a lookup that must leave the map unchanged.
@@ -52,9 +55,8 @@ returns a reference to its existing value without resetting it.
 
 ## Interview follow-up
 
-How would you read a possibly absent count from a `const std::map`? Use `find`,
-compare its result with `end()`, and read `it->second` only when found. Decide
-explicitly whether an absent entry means zero or an error. `operator[]` is not
-available on a const map because it can insert. Use `at()` if absence should
-throw. Both `find` and `at` support this read-only use in C++17.
+When is insertion through `[]` useful? When counting events, for example:
+`++counts["requests"]` starts a missing counter at zero and then increases it
+to one. If that counter already exists, it increases the stored value. Use
+`find` when you only want to check for an entry without adding one.
 ```

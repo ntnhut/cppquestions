@@ -1,7 +1,7 @@
 ---
 id: ownership-001
 topic: ownership
-difficulty: basic
+difficulty: intermediate
 cpp_standard: c++17
 kind: single-choice
 status: verified
@@ -13,6 +13,10 @@ related: [ownership-002, move-001]
 
 ```{question-meta}
 ```
+
+**Starting knowledge:** Scope, constructors, destructors, and the idea that a
+`std::unique_ptr` owns an object and cleans it up. Review those concepts before
+tracing the two objects' destruction here.
 
 In C++17, assume allocation succeeds and execution reaches the end of the inner
 scope normally. What does this program print?

@@ -1,7 +1,7 @@
 # About C++ Questions
 
-C++ Questions is a project by **Nhut Nguyen** to help developers practice modern
-C++ and find a clear path to deeper understanding.
+C++ Questions is a project by **Nhut Nguyen** to help junior developers practice
+reading and reasoning about C++ used in everyday software.
 
 Questions and full explanations are free to read without an account.
 

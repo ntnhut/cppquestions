@@ -1,7 +1,7 @@
 ---
 id: polymorphism-002
 topic: polymorphism
-difficulty: basic
+difficulty: intermediate
 cpp_standard: c++17
 kind: single-choice
 status: verified
@@ -13,6 +13,10 @@ related: [polymorphism-001]
 
 ```{question-meta}
 ```
+
+**Starting knowledge:** Simple classes, passing by value and by reference,
+inheritance, and virtual functions. This question applies when passing an object
+to a function that accepts its base type.
 
 In C++17, compare these two interfaces. Both call the same virtual member
 function, but one takes a reference and the other takes a value.
@@ -55,8 +59,6 @@ subobject, so the program compiles.
 How would you change `by_value` if it should inspect objects polymorphically
 without owning them? Give it a `const Base&` parameter, as in `by_reference`.
 That avoids slicing and copying. The reference borrows the original object;
-the caller must keep that object alive while the function uses it. If the
-function needs an independent polymorphic copy, copying a `Base` value is
-insufficient; the hierarchy needs an explicit copying design, such as a virtual
-clone operation returning an owning pointer.
+the caller must keep that object alive while the function uses it. This is a
+useful interface for reading an existing object without creating a copy.
 ```

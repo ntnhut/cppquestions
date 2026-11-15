@@ -14,6 +14,10 @@ related: [containers-002]
 ```{question-meta}
 ```
 
+**Starting knowledge:** A vector stores a sequence of values. An iterator marks
+a position, `*it` reads its value, and `end()` marks the position after the last
+element. Review ordinary vector loops before this intermediate erasure example.
+
 In C++17, this loop removes every even number, including adjacent even numbers.
 Assume allocation succeeds.
 

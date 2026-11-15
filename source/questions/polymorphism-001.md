@@ -1,7 +1,7 @@
 ---
 id: polymorphism-001
 topic: polymorphism
-difficulty: basic
+difficulty: intermediate
 cpp_standard: c++17
 kind: single-choice
 status: verified
@@ -13,6 +13,10 @@ related: [ownership-001, polymorphism-002]
 
 ```{question-meta}
 ```
+
+**Starting knowledge:** Inheritance, virtual functions, destructors, and
+`std::unique_ptr`. This question applies when maintaining code that owns derived
+objects through a base-class interface.
 
 In C++17, this owning pointer deletes a `Derived` object through a `Base*`.
 Assume allocation succeeds.
@@ -50,10 +54,9 @@ is printed. A smart pointer does not repair an invalid deletion contract.
 
 ## Interview follow-up
 
-Must every base class have a virtual destructor? No. A base intended to support
-deletion through a base pointer should provide a public virtual destructor.
-If deletion through the base interface must be forbidden, a protected
-non-virtual destructor can prevent ordinary callers from doing it. This
-`unique_ptr<Base>` with its default deleter needs an accessible destructor, so
-that second design would require changing how ownership is represented.
+Does an ordinary local object need a virtual destructor for cleanup at scope
+exit? No. A local object's destructor runs when its scope ends whether or not
+it is virtual. The special requirement here comes from deleting a derived
+object through a base pointer. Use a public virtual destructor for a base
+interface that supports that kind of ownership.
 ```
