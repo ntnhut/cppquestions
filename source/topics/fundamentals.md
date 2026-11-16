@@ -1,24 +1,25 @@
-# Language basics
+# Core language and common bugs
 
-Practice the small decisions that make everyday C++ code predictable: giving
-variables useful starting values and following how those values change.
+Diagnose bugs caused by arithmetic types and expression evaluation. Practice
+explaining why a plausible expression fails and how to make it meet its contract.
 
-**Starting knowledge:** Reading a short program, integer variables, and basic
-arithmetic. Each question explains the notation it uses.
+**Starting knowledge:** Ordinary C++ syntax, numeric types, pointers, and Boolean
+operators. Each question states its specific assumptions.
 
 ```{toctree}
 :maxdepth: 1
 
 ../questions/fundamentals-001
+../questions/fundamentals-002
 ```
 
 ## Your learning path
 
-1. Declare variables with the starting values your task needs.
-2. Distinguish setting a value from adding to its current value.
-3. Follow conditions and loops through small examples.
-4. Understand which variables are visible inside a scope.
-5. Use these basics when working with functions and containers.
+1. Identify the types used to evaluate an arithmetic expression.
+2. Fix integer-division bugs before information is lost.
+3. Use short-circuit evaluation to guard an operation with a precondition.
+4. Distinguish a null pointer from a pointer to an object whose lifetime has ended.
+5. Explain the assumptions a correction needs to remain valid.
 
 Continue with [functions and references](functions.md), then
 [containers and iterators](containers.md).

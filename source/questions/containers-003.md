@@ -5,52 +5,56 @@ difficulty: basic
 cpp_standard: c++17
 kind: single-choice
 status: verified
-tags: [vector, range-for, loops]
-related: [fundamentals-001, containers-002]
+tags: [vector, capacity, reserve, resize]
+related: [containers-001, functions-002]
 ---
 
-# How does a range-based loop read a vector's values?
+# Does reserving vector capacity create elements you can index?
 
 ```{question-meta}
 ```
 
-**Starting knowledge:** Integer variables, loops, and `+=` for addition.
-A `std::vector<int>` stores a sequence of integers; here its values are `4`,
-`7`, and `2`. The variable `total` starts at zero.
+**Starting knowledge:** Vectors, indexing, and inserting elements. `size()` counts
+existing elements; `capacity()` describes available storage before reallocation.
 
-In C++17, this program adds a list of whole-number prices. Assume allocation
-succeeds.
+In C++17, a loader expects up to six readings and reserves space before filling
+its vector. Assume allocation succeeds. The example inspects the vector after
+`reserve` and then creates three zero-valued elements with `resize`.
 
 ```{literalinclude} ../../examples/containers-003.cpp
 :language: cpp
 ```
 
 ```{quizdown-explained}
-## Which values does the loop add to total?
+## Which statement is correct immediately after samples.reserve(6)?
 
-1. [ ] The positions `0`, `1`, and `2`
-1. [ ] The number of elements, `3`, once
-1. [ ] Only `2`, the last value
-1. [x] Each stored value once: `4`, `7`, and `2`
+1. [ ] There are six integer elements, all initialized to zero
+1. [x] The size is zero and capacity is at least six; samples[0] is not a valid element yet
+1. [ ] The size is zero, but samples[0] can be assigned because storage was reserved
+1. [ ] Six is now the maximum permitted size, so inserting a seventh element is rejected
 ## Answer and explanation
 
-**It adds `4`, then `7`, then `2`, so the program prints `13`.**
+**Capacity is at least six, but the vector still contains no elements.**
+The first line prints `0 1`: size zero and a true capacity comparison.
 
-In [`for (int price : prices)`](https://timsong-cpp.github.io/cppwp/n4659/stmt.ranged#1),
-each iteration takes the next element's value as `price` and executes the body.
-The loop runs three times for this vector. It reads the stored prices, rather
-than their positions or the number of elements.
+[`reserve`](https://timsong-cpp.github.io/cppwp/n4659/vector.capacity#4)
+prepares storage without changing size. It does not create six integers, and
+reserved storage alone does not make `samples[0]` a valid element. The
+[sequence-access contract](https://timsong-cpp.github.io/cppwp/n4659/sequence.reqmts)
+requires an existing element at the index.
 
-`total += price` adds the current price to the running total. The total becomes
-four, then eleven, then thirteen. The loop processes all three values, so the
-last value is only the final addition.
+`reserve(6)` also does not impose a maximum of six elements. The vector can grow
+further, allocating more storage when necessary. Its capacity need not be
+exactly six.
 
-A range-based loop is useful when you want to read every item without managing
-an index yourself. This loop leaves the values in `prices` unchanged.
+The later [`resize(3, 0)`](https://timsong-cpp.github.io/cppwp/n4659/vector.capacity#16)
+creates three elements initialized to the supplied zero, so the second line
+prints `3 0`.
 
 ## Interview follow-up
 
-What would happen with an empty vector? The body would run zero times, so
-`total` would keep its initial value of zero and the program would print `0`.
-The same loop handles both an empty list and a list containing prices.
+Which operation fits a loader that appends each reading as it arrives? Reserve
+expected capacity, then use `push_back` for each actual reading. If instead you
+need six existing positions to fill by index, use `resize(6, 0)` first. Choose
+based on whether you need storage for future insertions or elements now.
 ```

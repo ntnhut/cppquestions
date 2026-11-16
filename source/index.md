@@ -1,26 +1,28 @@
 # C++ Questions
 
-Practice reading C++ code and explaining what it does.
+Practice C++ interview questions about code, bugs, and design decisions.
 
 Work through free interview questions and read the complete explanations.
 Choose questions whose starting knowledge matches what you have learned.
-Start with language basics, then functions and containers. Each question states
-the knowledge it assumes before showing its example.
+The questions assume you can already write ordinary C++ code. Each states its
+prerequisites and asks you to explain a practical behavior, diagnose a bug, or
+choose an API that meets a stated requirement.
 
 ## Start practicing
 
-- [Language basics](topics/fundamentals.md): give a counter a reliable starting value.
-- [Functions and references](topics/functions.md): update a caller's variable through a function parameter.
-- [Containers and iterators](topics/containers.md): read vector values, then try map lookup; save vector erasure for later.
+- [Core language and common bugs](topics/fundamentals.md): integer division and short-circuit pointer guards.
+- [Functions and references](topics/functions.md): copying costs, read-only inputs, and intended mutation.
+- [Containers and iterators](topics/containers.md): map lookup, vector capacity, and safe erasure.
+- [Classes and const-correctness](topics/classes.md): read-only getters and update permissions.
 - [Ownership and RAII](topics/ownership.md): automatic cleanup, followed by an intermediate smart-pointer example.
 - [Inheritance and polymorphism](topics/polymorphism.md): optional intermediate questions for code using base-class interfaces.
 - [Move semantics](topics/move-semantics.md): optional advanced practice on copying from a const object.
 
-This is the first prototype, with ten questions using single-choice and typed
+This is the first prototype, with thirteen questions using single-choice and typed
 answers. Each question includes its C++ version, difficulty, starting knowledge,
-explanation, and a follow-up to think through. Basic questions focus on one
-concept; intermediate questions combine prerequisites; advanced questions examine
-more detailed language rules.
+explanation, and a follow-up to think through. Basic questions target common
+junior interview concepts; intermediate questions combine them; advanced
+questions examine more detailed language rules.
 
 ```{toctree}
 :caption: Practice and learn
@@ -29,6 +31,7 @@ more detailed language rules.
 topics/fundamentals
 topics/functions
 topics/containers
+topics/classes
 topics/ownership
 topics/polymorphism
 topics/move-semantics

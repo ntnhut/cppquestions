@@ -1,23 +1,25 @@
 # Functions and references
 
-Practice what a function receives and whether changes inside it affect the
-caller. Start with integers before working with larger objects.
+Choose parameter types that express whether a function borrows, copies, or
+modifies its input. Practice explaining both the API contract and the cost of
+passing an existing object.
 
-**Starting knowledge:** Variables, assignment, arithmetic, and calling a simple
-function. Review [language basics](fundamentals.md) if initialization is unfamiliar.
+**Starting knowledge:** Functions, value and reference parameters, `const`, and
+standard containers.
 
 ```{toctree}
 :maxdepth: 1
 
 ../questions/functions-001
+../questions/functions-002
 ```
 
 ## Your learning path
 
-1. Identify a function's parameters and the arguments supplied by its caller.
-2. Understand how a value parameter gets its own value.
-3. Use a reference parameter when the function should update a caller's variable.
-4. Recognize `const` as a way to express read-only access.
-5. Use return values when a function should produce a result for the caller.
+1. Decide whether modifying the caller is part of a function's intended behavior.
+2. Distinguish a separate value parameter from a reference to an existing object.
+3. Use a const reference for a larger read-only input when no independent copy is needed.
+4. Keep inexpensive scalar parameters by value when that meets the contract.
+5. Check that borrowed objects remain alive for every use of the reference.
 
 Practice reading stored values in [containers and iterators](containers.md).

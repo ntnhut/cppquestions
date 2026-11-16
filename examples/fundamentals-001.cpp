@@ -1,7 +1,8 @@
 #include <iostream>
 
 int main() {
-    int completed = 0;
-    completed += 3;
-    std::cout << completed << '\n';
+    int total_bytes = 7;
+    int message_count = 2;
+    double average = total_bytes / message_count;
+    std::cout << average << '\n';
 }
